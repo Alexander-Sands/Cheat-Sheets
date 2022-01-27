@@ -1,0 +1,440 @@
+// Before Starting
+// --------------------------
+// Install: Node.js, Ruby, Koala, etc...
+// On Node.js : npm install -g sass
+// On Ruby : chcp 1252
+// On Ruby : gem install sass
+// ************************************************
+// Command Line Information
+// --------------------------
+// ruby -help
+// gem --help
+// sass --help
+// ruby -v
+// gem -v
+// sass -v
+
+// Node -help
+// npm --help
+// sass --help
+// node -v
+// npm -v
+// sass -v
+// ************************************************
+// Files Extension
+// --------------------------
+// file.scss
+// file.sass
+// ************************************************
+// How to Ignore files
+// ------------------------------------------
+// _Sass.scss
+// _Sass.sass
+// ************************************************
+// Command Line
+// --------------------------
+// sass D:\Tanatos\SASS\tanatos.sass D:\Tanatos\CSS\tanatos.css
+
+// sass --watch SASS\tanatos.sass:CSS\tanatos.css
+// sass --watch SASS\tanatos.sass:CSS\tanatos.css
+// sass --watch SASS:CSS
+
+// sass --watch SASS:CSS --style :expanded
+// sass --watch SASS:CSS --style :compact
+// sass --watch SASS:CSS --style :compressed
+// ******************************************************************************
+// ******************************************************************************
+// Comments And Documenting
+// ------------------------------------------
+// This Comment Will Not Show In CSS File
+/* This Comment Will Show In CSS File But Not In Compressed Mode */
+/*! This Comment Will Show In CSS File And In Compressed Mode */
+
+$company: "falcon";
+/* This Comment Contains Interpolation => #{$company} */
+
+/// Function To Do Bla Bla Bla
+///
+/// @param {num}
+/// The Number To Deal With
+/// @return {int}
+// ************************************************
+// Import And Use And Advanced Architecture
+// ------------------------------------------
+// @import "all.min";
+// @use "./sass/variables/all.min";
+
+// @use "./sass/variables/colors" as *;
+// .sidebar {background-color: $main}
+
+// @use "./sass/variables/colors";
+// .sidebar {background-color: colors.$main;}
+// ************************************************
+// Variables
+// ------------------------------------------
+$mainFontSize: 16px;
+.class_1 {
+  font-size: $mainFontSize - 2;
+}
+.class_2 {
+  width: (10px * 3 / 100 + 5);
+}
+// ----    ----    ---- //
+$mainColor: #f7600e;
+.class-3 {
+  color: $mainColor;
+}
+.class-4 {
+  $alt_color: black !global;
+  color: $mainColor;
+}
+.class-5 {
+  color: $alt_color;
+}
+
+.class_6 {
+  color: #00f + red;
+}
+// ----    ----    ---- //
+$maxMobile_1: "767px";
+@media (max-width: $maxMobile_1) {
+  .sidebar {
+    padding: 20px;
+  }
+}
+$maxMobile_2: "max-width: 767px";
+@media ($maxMobile_2) {
+  .sidebar {
+    padding: 20px;
+  }
+}
+$maxMobile_3: "(max-width: 767px)";
+@media #{$maxMobile_3} {
+  .sidebar {
+    padding: 20px;
+  }
+}
+// ************************************************
+// Interpolation
+// ------------------------------------------
+$company: "falcon";
+$position: "right";
+
+.ad-#{$company}-#{unique-id()} {
+  font-size: 20px;
+  background-image: url("imgs/#{$company}.png");
+  #{$position}: 0;
+}
+.ad-#{unique-id()} {
+  font-weight: bold;
+}
+// ************************************************
+// Nesting And Parent Element
+// ------------------------------------------
+.parent {
+  font-weight: bold;
+  .child {
+    font-size: 20px;
+    .grand-child {
+      font-size: 15px;
+    }
+  }
+}
+// ----    ----    ---- //
+.parent-one,
+.parent-two {
+  padding: 20px;
+  .child {
+    padding: 10px;
+  }
+}
+// ----    ----    ---- //
+.parent > {
+  .child {
+    font-size: 20px;
+  }
+  .test {
+    font-weight: bold;
+  }
+}
+// ----    ----    ---- //
+.parent {
+  > .child {
+    font-size: 20px;
+  }
+  .test {
+    font-weight: bold;
+  }
+  + p {
+    font-size: 15px;
+  }
+}
+// ----    ----    ---- //
+.parent {
+  > {
+    .element-one {
+      font-size: 10px;
+    }
+    .element-two {
+      font-size: 10px;
+    }
+  }
+  .not-direct-child {
+    font-weight: bold;
+  }
+}
+// ----    ----    ---- //
+.box {
+  .title {
+    font-size: 10px;
+  }
+  .description {
+    font-size: 8px;
+  }
+  &.red {
+    color: red;
+  }
+  &.green {
+    color: green;
+  }
+  &:hover {
+    background-color: #eee;
+  }
+  &:hover .title {
+    font-weight: bold;
+  }
+  :not(&) {
+    font-weight: normal;
+  }
+  [dir="rtl"] & {
+    direction: rtl;
+  }
+}
+// ----    ----    ---- //
+.box {
+  font-size: 20px;
+  font: {
+    size: 15px;
+    weight: bold;
+  }
+  padding: 10px;
+  margin: auto {
+    top: 10px;
+    bottom: 15px;
+  }
+}
+// ************************************************
+// Property Declarations And Placeholder
+// ------------------------------------------
+.main-box-1 {
+  background-color: white;
+  padding: 15px;
+  border: 1px solid #ccc;
+}
+%main-box-2 {
+  background-color: white;
+  padding: 15px;
+  border: 1px solid #ccc;
+}
+.header {
+  @extend .main-box-1;
+  @extend %main-box-2;
+}
+// ************************************************
+// Mixin And Include
+// ------------------------------------------
+@mixin centering {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@mixin circle($dimensions) {
+  border-radius: 50%;
+  width: $dimensions;
+  height: $dimensions;
+}
+
+.circle-100 {
+  @include circle(100px);
+}
+.circle-200 {
+  @include circle(200px);
+}
+.center-circle {
+  @include circle(400px);
+  @include centering;
+}
+// ************************************************
+// Control Flow – If, Else
+// ------------------------------------------
+$rounded: false;
+.box {
+  // @extend %main-box;
+  border-radius: if($rounded, 6px, null);
+}
+
+$theme: "dark";
+.page {
+  @if $theme == "light" {
+    background-color: white;
+    color: #444;
+  } @else {
+    background-color: #444;
+    color: white;
+  }
+}
+
+$direction: "top";
+.arrow-div {
+  // @extend %main-box;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 300px;
+  position: relative;
+  margin: 50px auto;
+  &::before {
+    content: "";
+    position: absolute;
+    border: 20px solid transparent;
+    @if $direction == "top" {
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom-color: red;
+    } @else if $direction == "right" {
+      right: -40px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-left-color: red;
+    } @else if $direction == "bottom" {
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-top-color: red;
+    } @else if $direction == "left" {
+      left: -40px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-right-color: red;
+    } @else {
+      @error "This Direction #{$direction} Is Not Valid";
+    }
+  }
+}
+// ************************************************
+// for loop
+// ------------------------------------------
+@for $i from 1 through 16 {
+  .class1#{$i} {
+    font-size: 16px + $i;
+  }
+}
+
+@for $i from 1 to 16 {
+  .class2#{$i} {
+    font-size: 16px + $i;
+  }
+}
+// ************************************************
+// Loop – Each And Maps
+// ------------------------------------------
+$sociallist: facebook twitter youtube linkedin codepen instgram;
+@each $social in $sociallist {
+  icon-#{$social} {
+    background: url("Media/Images/image_#{$social}.png");
+  }
+}
+
+$themes: red, green, blue, orange;
+@each $theme in $themes {
+  .#{$theme}-theme {
+    .product {
+      background-color: white;
+      border-bottom: 2px solid $theme;
+      .title {
+        color: $theme;
+        font-weight: bold;
+      }
+    }
+  }
+}
+// ----    ----    ---- //
+$socials: (
+  "facebook": blue,
+  "youtube": red,
+  "github": black,
+  "twitter": indianred,
+);
+@each $name, $color in $socials {
+  .#{$name} {
+    background-color: $color;
+    color: white;
+    &::before {
+      content: $name;
+    }
+  }
+}
+// ----    ----    ---- //
+$classes: "one" 20px red, "two" 15px green, "three" 22px blue;
+@each $class, $font, $color in $classes {
+  .#{$class} {
+    font-size: $font;
+    background-color: $color;
+    color: white;
+    padding: $font / 2;
+  }
+}
+// ************************************************
+// Loop – While
+// ------------------------------------------
+$start: 1;
+@while $start <= 10 {
+  .width-#{$start * 100} {
+    width: $start * 100px;
+    height: ($start * 100px) / 2;
+  }
+  $start: $start + 1;
+}
+// ************************************************
+// .elzero {
+//     @extend .upper;
+//     @extend .main-color;
+//     @include circle(400px);
+//     @include centering;
+//     font-size: 40px;
+// }
+// .school {
+//     @extend %elzero
+// }
+// .alex {
+//     @import "os";
+// }
+// ************************************************
+// Function
+// ------------------------------------------
+/// Function To Get Element Height
+///
+/// @param {size}
+/// Element Width
+/// @return {int}
+/// Return Element Height => Width / 2
+@function half($size) {
+  @return $size / 2;
+}
+@function calculate($sizes...) {
+  $total: 0;
+  @each $size in $sizes {
+    $total: $total + $size;
+  }
+  @return $total;
+}
+
+$width: 200px;
+.element {
+  width: $width;
+  height: half($width);
+  top: calculate(100px, 200px, 50px);
+}
