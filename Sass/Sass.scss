@@ -44,42 +44,176 @@
 // sass --watch SASS:CSS --style :compressed
 // ******************************************************************************
 // ******************************************************************************
+// Difference between Scss and Sass
+// --------------------------
+// Scss
+// ------------
+// @function pow($base, $exponent) {
+//   $result: 1;
+//   @for $_ from 1 through $exponent {
+//     $result: $result * $base;
+//   }
+//   @return $result;
+// }
+
+// Sass
+// ------------
+// @function pow($base, $exponent)
+//   $result: 1
+//   @for $_ from 1 through $exponent
+//     $result: $result * $base
+//
+//   @return $result
+// ******************************************************************************
+// ******************************************************************************
 // Comments And Documenting
 // ------------------------------------------
 // This Comment Will Not Show In CSS File
-/* This Comment Will Show In CSS File But Not In Compressed Mode */
-/*! This Comment Will Show In CSS File And In Compressed Mode */
-
-$company: "falcon";
-/* This Comment Contains Interpolation => #{$company} */
 
 /// Function To Do Bla Bla Bla
 ///
 /// @param {num}
 /// The Number To Deal With
 /// @return {int}
+
+/* This Comment Will Show In CSS File But Not In Compressed Mode */
+
+$company: "falcon";
+/* This Comment Contains Interpolation => #{$company} */
+
+/*! This Comment Will Show In CSS File And In Compressed Mode */
 // ************************************************
 // Import And Use And Advanced Architecture
 // ------------------------------------------
-// @import "all.min";
-// @use "./sass/variables/all.min";
+@import "./Include/library";
+@use "./Include/library";
 
-// @use "./sass/variables/colors" as *;
-// .sidebar {background-color: $main}
+// ----    ----    ---- //
+// With Variables Or mixin (1)
 
-// @use "./sass/variables/colors";
-// .sidebar {background-color: colors.$main;}
+@import "./Include/library";
+// -- OR --
+@use "./Include/library" as *;
+
+.sidebar {
+  @include rounded;
+  background-color: $main
+}
+
+// ----    ----    ---- //
+// With Variables Or mixin (2)
+
+@use "./Include/library" as lib;
+.sidebar {
+  @include lib.rounded;
+  background-color: lib.$main;
+}
+
+// ----    ----    ---- //
+// With Variables Or mixin (3)
+
+@use "./Include/library";
+.sidebar {
+  @include library.rounded;
+  background-color: library.$main;
+}
+
+// ----    ----    ---- //
+
+// Creat library.sass
+// ---------------------------
+// $black: #000 !default;
+// $border-radius: 0.25rem !default;
+// $box-shadow: 0 0.5rem 1rem rgba($black, 0.15) !default;
+// .code {
+//   border-radius: $border-radius;
+//   box-shadow: $box-shadow;
+// }
+// ------------------------------
+@use './Include/library' with (
+  $black: #222,
+  $border-radius: 0.1rem
+);
 // ************************************************
-// Variables
+// Variables (1)
 // ------------------------------------------
 $mainFontSize: 16px;
 .class_1 {
   font-size: $mainFontSize - 2;
 }
+
+// ----    ----    ---- //
+
+$maxMobile_1: "767px";
+@media (max-width: $maxMobile_1) {
+  .sidebar {
+    padding: 20px;
+  }
+}
+
+$maxMobile_2: "max-width: 767px";
+@media ($maxMobile_2) {
+  .sidebar {
+    padding: 20px;
+  }
+}
+
+$maxMobile_3: "(max-width: 767px)";
+@media #{$maxMobile_3} {
+  .sidebar {
+    padding: 20px;
+  }
+}
+
+// ----    ----    ---- //
+
+$roboto-font-path: "../fonts/roboto";
+@font-face {
+  src: url("#{$roboto-font-path}/Roboto-Thin.woff2") format("woff2");
+  // src: url($roboto-font-path + "/Roboto-Thin.woff2") format("woff2");
+  // src: url(#{$roboto-font-path}/Roboto-Thin.woff2) format("woff2");
+  
+  font-family: "Roboto";
+  font-weight: 100;
+}
+
+// ----    ----    ---- //
+
 .class_2 {
   width: (10px * 3 / 100 + 5);
 }
+
+.class_3 {
+  color: #00f + red;
+}
+
+.class_4 {
+  color: rgba(#00f, 0.5);
+}
+// ************************************************
+// Variables (2) [default, global]
+// ------------------------------------------
+// Default
+//----------------------------------
+// Creat library.sass
+// ---------------------------
+// $black: #000 !default;
+// $border-radius: 0.25rem !default;
+// $box-shadow: 0 0.5rem 1rem rgba($black, 0.15) !default;
+// .code {
+//   border-radius: $border-radius;
+//   box-shadow: $box-shadow;
+// }
+// ------------------------------
+@use './Include/library' with (
+  $black: #222,
+  $border-radius: 0.1rem
+);
+
 // ----    ----    ---- //
+
+// Global
+//----------------------------------
 $mainColor: #f7600e;
 .class-3 {
   color: $mainColor;
@@ -87,39 +221,52 @@ $mainColor: #f7600e;
 .class-4 {
   $alt_color: black !global;
   color: $mainColor;
+  $mainColor: #07660e !global;
 }
 .class-5 {
   color: $alt_color;
+  background-color: $mainColor;
+}
+// ************************************************
+// ************************************************
+// Variables (3) [&] / Advanced Nesting
+// ------------------------------------------
+@mixin app-background($color) {
+  #{if(&, '&.app-background', '.app-background')} {
+    background-color: $color;
+    color: rgba(#fff, 0.75);
+  }
 }
 
-.class_6 {
-  color: #00f + red;
+@include app-background(#036);
+.sidebar {
+  @include app-background(#c6538c);
 }
+
 // ----    ----    ---- //
-$maxMobile_1: "767px";
-@media (max-width: $maxMobile_1) {
-  .sidebar {
-    padding: 20px;
+
+@use "sass:selector";
+
+@mixin unify-parent($child) {
+  @at-root #{selector.unify(&, $child)} {
+    @content;
   }
 }
-$maxMobile_2: "max-width: 767px";
-@media ($maxMobile_2) {
-  .sidebar {
-    padding: 20px;
+
+.wrapper .field {
+  @include unify-parent("input") {
+    /* ... */
   }
-}
-$maxMobile_3: "(max-width: 767px)";
-@media #{$maxMobile_3} {
-  .sidebar {
-    padding: 20px;
+  @include unify-parent("select") {
+    /* ... */
   }
 }
 // ************************************************
 // Interpolation
 // ------------------------------------------
+// Example 1
 $company: "falcon";
 $position: "right";
-
 .ad-#{$company}-#{unique-id()} {
   font-size: 20px;
   background-image: url("imgs/#{$company}.png");
@@ -127,6 +274,23 @@ $position: "right";
 }
 .ad-#{unique-id()} {
   font-weight: bold;
+}
+
+// Example 2
+@mixin inline-animation($duration) {
+  $name: inline-#{unique-id()};
+  @keyframes #{$name} {
+    @content;
+  }
+  animation-name: $name;
+  animationduration: $duration;
+  animation-iteration-count: infinite;
+}
+.pulse {
+  @include inline-animation(2s) {
+    from { background-color: yellow }
+    to { background-color: red }
+  }
 }
 // ************************************************
 // Nesting And Parent Element
@@ -191,6 +355,9 @@ $position: "right";
   .description {
     font-size: 8px;
   }
+  &-main {
+    font-size: 8px;
+  }
   &.red {
     color: red;
   }
@@ -223,6 +390,16 @@ $position: "right";
     bottom: 15px;
   }
 }
+// ----    ----    ---- //
+ul, ol {
+  text-align: left;
+  & li {
+    padding: 20px
+  }
+  & & {
+    margin: 20px;
+  }
+}
 // ************************************************
 // Property Declarations And Placeholder
 // ------------------------------------------
@@ -248,14 +425,20 @@ $position: "right";
   justify-content: center;
   align-items: center;
 }
-@mixin circle($dimensions) {
+// @mixin circle($dimensions) {
+//   border-radius: 50%;
+//   width: $dimensions;
+//   height: $dimensions;
+// }
+@mixin circle($dimensions: 100px) {
   border-radius: 50%;
   width: $dimensions;
   height: $dimensions;
 }
 
 .circle-100 {
-  @include circle(100px);
+  // @include circle(100px);
+  @include circle;
 }
 .circle-200 {
   @include circle(200px);
